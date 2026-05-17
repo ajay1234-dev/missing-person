@@ -38,9 +38,12 @@ export default function AlertsTimelinePage() {
     };
   }, []);
 
-  const updateAlertStatus = async (alertId: string, status: "verified" | "false_alarm") => {
+  const updateAlertStatus = async (alert: Alert, status: "verified" | "false_alarm") => {
      try {
-        await updateDoc(doc(db, "alerts", alertId), { status });
+        await updateDoc(doc(db, "alerts", alert.id), { status });
+        if (status === "verified") {
+            await updateDoc(doc(db, "missingPersons", alert.missingPersonId), { status: "Found" });
+        }
      } catch(e) {
         console.error("Error updating status", e);
      }
@@ -162,8 +165,8 @@ export default function AlertsTimelinePage() {
                             
                             {alert.status === "pending" && user?.role === "admin" && (
                                <div className="mt-6 flex gap-2 justify-end pt-4 border-t border-[var(--border)]">
-                                  <Button variant="danger" size="sm" onClick={() => updateAlertStatus(alert.id, "false_alarm")}>Tag Reject</Button>
-                                  <Button size="sm" onClick={() => updateAlertStatus(alert.id, "verified")} className="bg-[var(--success)] text-white hover:bg-[var(--success)] mix-blend-plus-lighter">Confirm Target</Button>
+                                  <Button variant="danger" size="sm" onClick={() => updateAlertStatus(alert, "false_alarm")}>Tag Reject</Button>
+                                  <Button size="sm" onClick={() => updateAlertStatus(alert, "verified")} className="bg-[var(--success)] text-white hover:bg-[var(--success)] mix-blend-plus-lighter">Confirm Target</Button>
                                </div>
                             )}
                          </div>
