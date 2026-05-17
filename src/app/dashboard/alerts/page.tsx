@@ -1,19 +1,52 @@
 "use client";
 
 import { useAppStore } from "@/store/useAppStore";
-import { mockCases, mockAlerts } from "@/lib/mocks/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { MapPin, ChevronDown, ChevronUp, BellRing } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { collection, onSnapshot, query, orderBy, doc, updateDoc } from "firebase/firestore";
+import { db } from "@/lib/firebase";
+import { Alert, MissingPersonCase } from "@/types";
 
 export default function AlertsTimelinePage() {
   const { user } = useAppStore();
   const [filter, setFilter] = useState("all");
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  
+  const [alerts, setAlerts] = useState<Alert[]>([]);
+  const [cases, setCases] = useState<MissingPersonCase[]>([]);
 
-  const filteredAlerts = mockAlerts.filter(a => {
+  useEffect(() => {
+    // Listen to Cases
+    const unsubCases = onSnapshot(collection(db, "missingPersons"), (snapshot) => {
+      const c = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as MissingPersonCase));
+      setCases(c);
+    });
+
+    // Listen to Alerts
+    const qAlerts = query(collection(db, "alerts"), orderBy("createdAt", "desc"));
+    const unsubAlerts = onSnapshot(qAlerts, (snapshot) => {
+      const a = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id } as Alert));
+      setAlerts(a);
+    });
+
+    return () => {
+      unsubCases();
+      unsubAlerts();
+    };
+  }, []);
+
+  const updateAlertStatus = async (alertId: string, status: "verified" | "false_alarm") => {
+     try {
+        await updateDoc(doc(db, "alerts", alertId), { status });
+     } catch(e) {
+        console.error("Error updating status", e);
+     }
+  };
+
+  const filteredAlerts = alerts.filter(a => {
     if (filter === "pending") return a.status === "pending";
     if (filter === "verified") return a.status === "verified";
     return true;
@@ -60,7 +93,7 @@ export default function AlertsTimelinePage() {
             )}
             
             {filteredAlerts.map((alert) => {
-               const person = mockCases.find(c => c.id === alert.missingPersonId);
+               const person = cases.find(c => c.id === alert.missingPersonId);
                const isExpanded = expandedId === alert.id;
                
                let dotColor = "bg-[var(--warning)]";
@@ -120,7 +153,7 @@ export default function AlertsTimelinePage() {
                                <div className="space-y-2">
                                   <h4 className="text-[11px] font-bold text-[var(--text-muted)] uppercase tracking-[0.06em]">Visual Verification</h4>
                                   <div className="flex gap-2">
-                                     <img src={person?.photoURL} className="w-1/2 h-[120px] object-cover rounded-[6px] border border-[var(--border)] hover:brightness-110 transition-all" alt="Target" />
+                                     <img src={person?.photoURL || "https://images.unsplash.com/photo-1544265538-4e55eec1cceb"} className="w-1/2 h-[120px] object-cover rounded-[6px] border border-[var(--border)] hover:brightness-110 transition-all" alt="Target" />
                                      <img src={alert.matchedImageURL} className="w-1/2 h-[120px] object-cover rounded-[6px] border border-[var(--border)] filter sepia-[0.3] hue-rotate-[180deg] saturate-[1.5] brightness-[0.8] contrast-[1.2] hover:brightness-100 transition-all" alt="CCTV Match" />
                                   </div>
                                </div>
@@ -129,8 +162,8 @@ export default function AlertsTimelinePage() {
                             
                             {alert.status === "pending" && user?.role === "admin" && (
                                <div className="mt-6 flex gap-2 justify-end pt-4 border-t border-[var(--border)]">
-                                  <Button variant="danger" size="sm">Tag Reject</Button>
-                                  <Button size="sm" className="bg-[var(--success)] text-white hover:bg-[var(--success)] mix-blend-plus-lighter">Confirm Target</Button>
+                                  <Button variant="danger" size="sm" onClick={() => updateAlertStatus(alert.id, "false_alarm")}>Tag Reject</Button>
+                                  <Button size="sm" onClick={() => updateAlertStatus(alert.id, "verified")} className="bg-[var(--success)] text-white hover:bg-[var(--success)] mix-blend-plus-lighter">Confirm Target</Button>
                                </div>
                             )}
                          </div>

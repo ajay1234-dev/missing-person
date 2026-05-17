@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Target, Bell, FileSearch, Home, Shield, LogOut } from "lucide-react";
+import { Users, Target, Bell, FileSearch, Home, Shield, LogOut, Radio } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -15,6 +15,7 @@ export function Sidebar() {
     { name: "Cases", href: "/dashboard/cases", icon: Users, roles: ["family", "ngo", "admin"] },
     { name: "Report Case", href: "/dashboard/report", icon: FileSearch, roles: ["family", "ngo", "admin"] },
     { name: "CCTV Scan", href: "/dashboard/scan", icon: Target, roles: ["ngo", "admin"] },
+    { name: "Live Monitor", href: "/dashboard/live", icon: Radio, roles: ["admin"] },
     { name: "Alerts", href: "/dashboard/alerts", icon: Bell, roles: ["family", "ngo", "admin"] },
   ];
 

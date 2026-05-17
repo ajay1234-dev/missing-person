@@ -39,12 +39,12 @@ export default function CCTVScannerPage() {
     setResults([]);
 
     try {
-      const { collection, getDocs } = await import("firebase/firestore");
+      const { collection, getDocs, doc, setDoc } = await import("firebase/firestore");
       const { db } = await import("@/lib/firebase");
       const querySnapshot = await getDocs(collection(db, "missingPersons"));
       const dbCases = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
 
-      setTimeout(() => {
+      setTimeout(async () => {
         let matches = [];
         // Simulate high-fidelity extraction
         for (let data of dbCases as any[]) {
@@ -57,6 +57,19 @@ export default function CCTVScannerPage() {
                 confidence: c,
                 photo: data.photoURL
               });
+              
+              if (c > 80) {
+                 const alertId = `alert_${Date.now()}_${data.id}`;
+                 setDoc(doc(db, "alerts", alertId), {
+                    id: alertId,
+                    missingPersonId: data.id,
+                    matchedImageURL: preview,
+                    location: "CCTV Node Alpha-Manual",
+                    confidence: c,
+                    status: "pending",
+                    createdAt: new Date().toISOString()
+                 });
+              }
            }
         }
         
