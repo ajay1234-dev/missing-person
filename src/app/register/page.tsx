@@ -95,7 +95,7 @@ export default function RegisterPage() {
 
          <div className="flex items-center gap-2 relative z-10">
            <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-[0_0_15px_var(--brand-glow)] flex items-center justify-center"><Shield className="text-white w-5 h-5"/></div>
-           <span className="font-extrabold text-[20px] text-[var(--text-primary)] tracking-tight">FindSystem AI</span>
+           <span className="font-extrabold text-[20px] text-[var(--text-primary)] tracking-tight">Findra AI</span>
          </div>
 
          <div className="relative z-10 flex flex-col gap-8 mb-12">
@@ -112,7 +112,7 @@ export default function RegisterPage() {
             <div className="p-6 rounded-[20px] bg-white/[0.03] border border-white/[0.08] backdrop-blur-md shadow-2xl relative group">
                <div className="absolute -top-6 -right-6 w-32 h-32 bg-[var(--brand)]/20 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                <p className="text-[18px] font-medium text-gray-300 leading-relaxed italic relative z-10">
-                  "Centralized datasets are critical for accelerating investigation cycles. FindSystem bridges the gap between CCTV nodes."
+                  "Centralized datasets are critical for accelerating investigation cycles. Findra bridges the gap between CCTV nodes."
                </p>
                <div className="flex items-center gap-4 mt-6 relative z-10">
                   <div className="w-12 h-12 rounded-full border-2 border-[var(--brand)] p-0.5 bg-[var(--bg-elevated)] overflow-hidden flex items-center justify-center font-bold text-[12px]">CD</div>
@@ -125,7 +125,7 @@ export default function RegisterPage() {
          </div>
 
          <div className="relative z-10 text-[12px] text-[var(--text-muted)] font-medium">
-            © 2024 FindSystem Intelligence. Secure Vector Protocol v2.4.0
+            © 2024 Findra Intelligence. Secure Vector Protocol v2.4.0
          </div>
       </div>
 
@@ -138,7 +138,7 @@ export default function RegisterPage() {
               {/* Mobile Logo Fallback */}
               <div className="lg:hidden flex items-center gap-2 mb-10 justify-center">
                 <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-[0_0_15px_var(--brand-glow)]"><Shield className="text-white w-5 h-5"/></div>
-                <span className="font-bold text-[20px] text-[var(--text-primary)] tracking-tight">FindSystem AI</span>
+                <span className="font-bold text-[20px] text-[var(--text-primary)] tracking-tight">Findra AI</span>
               </div>
 
               <div className="text-center mb-10">

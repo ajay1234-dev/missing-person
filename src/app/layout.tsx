@@ -10,7 +10,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "AI ID System",
+  title: "Findra AI",
   description: "Identify Missing Persons using AI",
 };
 

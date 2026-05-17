@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Users, Target, Bell, FileSearch, Home, Shield, LogOut, Radio } from "lucide-react";
+import { Users, Target, Bell, FileSearch, Home, Shield, LogOut, Radio, Radar } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAppStore } from "@/store/useAppStore";
 
@@ -26,8 +26,8 @@ export function Sidebar() {
       {/* Desktop Sidebar */}
       <div className="hidden sm:flex flex-col w-[240px] bg-[var(--bg-surface)] border-r border-[var(--border)] shrink-0 h-full p-4 select-none relative z-20">
         <div className="pb-6 pt-2 px-3 flex items-center gap-2">
-          <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-sm"><Shield className="text-white w-4 h-4"/></div>
-          <span className="font-bold text-[16px] text-[var(--text-primary)] tracking-[-0.02em]">FindSystem AI</span>
+          <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-sm"><Radar className="text-white w-4 h-4"/></div>
+          <span className="font-bold text-[16px] text-[var(--text-primary)] tracking-[-0.02em]">Findra AI</span>
         </div>
 
         <div className="flex-1 space-y-1 overflow-y-auto">

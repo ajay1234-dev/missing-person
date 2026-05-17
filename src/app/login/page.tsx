@@ -81,7 +81,7 @@ export default function LoginPage() {
 
          <div className="flex items-center gap-2 relative z-10">
            <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-[0_0_15px_var(--brand-glow)] flex items-center justify-center"><Shield className="text-white w-5 h-5"/></div>
-           <span className="font-extrabold text-[20px] text-[var(--text-primary)] tracking-tight">FindSystem AI</span>
+           <span className="font-extrabold text-[20px] text-[var(--text-primary)] tracking-tight">Findra AI</span>
          </div>
 
          <div className="relative z-10 flex flex-col gap-8 mb-12">
@@ -113,7 +113,7 @@ export default function LoginPage() {
          </div>
 
          <div className="relative z-10 text-[12px] text-[var(--text-muted)] font-medium">
-            © 2024 FindSystem Intelligence. Secure Vector Protocol v2.4.0
+            © 2024 Findra Intelligence. Secure Vector Protocol v2.4.0
          </div>
       </div>
 
@@ -126,7 +126,7 @@ export default function LoginPage() {
               {/* Mobile Logo Fallback */}
               <div className="lg:hidden flex items-center gap-2 mb-10 justify-center">
                 <div className="bg-[var(--brand)] p-1.5 rounded-lg shadow-[0_0_15px_var(--brand-glow)]"><Shield className="text-white w-5 h-5"/></div>
-                <span className="font-bold text-[20px] text-[var(--text-primary)] tracking-tight">FindSystem AI</span>
+                <span className="font-bold text-[20px] text-[var(--text-primary)] tracking-tight">Findra AI</span>
               </div>
 
               <div className="text-center mb-10">

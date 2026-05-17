@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
   if (!person) return { title: 'Case Not Found' };
   
   return {
-    title: `MISSING: ${person.name} | FindSystem AI`,
+    title: `MISSING: ${person.name} | Findra AI`,
     description: `Have you seen ${person.name}? Last seen at ${person.lastSeenLocation}. Contact authorities immediately.`,
     openGraph: {
       title: `URGENT ALERT: Missing Person - ${person.name}`,

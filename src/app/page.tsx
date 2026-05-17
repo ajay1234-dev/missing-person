@@ -10,7 +10,7 @@ export default function LandingPage() {
       <header className="px-6 md:px-12 h-20 flex items-center justify-between border-b border-[var(--border)] bg-[var(--bg-base)]/80 backdrop-blur-xl sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <div className="bg-[var(--brand)] p-2 rounded-[8px] shadow-[0_0_20px_var(--brand-glow)]"><Shield className="text-white w-5 h-5"/></div>
-          <span className="font-bold text-[18px] text-[var(--text-primary)] tracking-[-0.03em]">FindSystem AI</span>
+          <span className="font-bold text-[18px] text-[var(--text-primary)] tracking-[-0.03em]">Findra AI</span>
         </div>
         <nav className="flex items-center gap-6">
           <Link href="/login" className="text-[14px] font-medium text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors">Log In</Link>
@@ -119,7 +119,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between">
            <div className="flex items-center gap-3 mb-6 md:mb-0">
             <Shield className="text-[var(--text-muted)] w-5 h-5"/>
-            <span className="font-semibold text-[14px] text-[var(--text-muted)]">FindSystem AI © 2026</span>
+            <span className="font-semibold text-[14px] text-[var(--text-muted)]">Findra AI © 2026</span>
           </div>
           <p className="text-[13px] text-[var(--text-muted)]">Secure Intelligence Tooling.</p>
         </div>
