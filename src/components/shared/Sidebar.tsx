@@ -87,6 +87,13 @@ export function Sidebar() {
             </Link>
           );
         })}
+        <button
+          onClick={logout}
+          className="flex flex-col items-center justify-center w-full h-full gap-1 transition-all text-[var(--text-secondary)] hover:text-[var(--danger)]"
+        >
+          <LogOut className="w-5 h-5" />
+          <span className="text-[10px] font-medium">Sign Out</span>
+        </button>
       </div>
     </>
   );
