@@ -53,7 +53,8 @@ export const useAppStore = create<AppState>((set, get) => ({
               isLoading: false 
             });
             // Set cookie for middleware
-            document.cookie = `auth-token=${firebaseUser.accessToken}; path=/`;
+            const token = await firebaseUser.getIdToken();
+            document.cookie = `auth-token=${token}; path=/`;
           } else {
              // Fallback if no user document (e.g., just signed up via OAuth and doc isn't written yet)
              set({ 
@@ -65,7 +66,8 @@ export const useAppStore = create<AppState>((set, get) => ({
               },
               isLoading: false 
             });
-            document.cookie = `auth-token=${firebaseUser.accessToken}; path=/`;
+            const token = await firebaseUser.getIdToken();
+            document.cookie = `auth-token=${token}; path=/`;
           }
         } catch(e) {
           console.error("Error fetching user role", e);

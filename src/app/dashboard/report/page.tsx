@@ -16,7 +16,7 @@ import { doc, setDoc } from "firebase/firestore";
 
 const reportSchema = z.object({
   name: z.string().min(2, "Full name required"),
-  age: z.coerce.number().min(1, "Valid age").max(120),
+  age: z.number().min(1, "Valid age").max(150, "Too long"),
   gender: z.enum(["Male", "Female", "Other", "Unknown"]),
   lastSeenLocation: z.string().min(5, "Be specific"),
   lastSeenDate: z.string().min(1, "Required"),
@@ -130,7 +130,8 @@ export default function ReportCasePage() {
                  </div>
                  <div className="space-y-1.5">
                    <label className="text-[13px] font-semibold text-[var(--text-primary)]">Age</label>
-                   <Input type="number" {...register("age")} placeholder="34" />
+                   <Input type="number" {...register("age", { valueAsNumber: true })} placeholder="34" />
+                   {errors.age && <p className="text-[12px] text-[var(--danger)]">{errors.age.message}</p>}
                  </div>
                  <div className="space-y-1.5">
                    <label className="text-[13px] font-semibold text-[var(--text-primary)]">Gender</label>
