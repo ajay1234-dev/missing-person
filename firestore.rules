@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user is an admin by validating their role in their users document
+    function isAdmin() {
+      return isAuthenticated() && 
+        exists(/databases/$(database)/documents/users/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == "admin";
+    }
+
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId; // Users manage their own profile
+      allow read, write: if isAdmin();
+    }
+
+    match /missingPersons/{caseId} {
+      allow read: if true; // Public cases can be read by anyone for tips
+      allow write: if isAdmin() || (isAuthenticated() && request.resource.data.reportedBy == request.auth.uid);
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.reportedBy == request.auth.uid);
+    }
+    
+    match /alerts/{alertId} {
+      allow read: if isAuthenticated(); // Families can read alerts pertaining to them via queries
+      allow write: if isAdmin(); 
+      // Cloud functions or Admin SDKs bypass these rules anyway for the API routes
+    }
+    
+    match /cctvScans/{scanId} {
+      allow read, write: if isAdmin();
+    }
+    
+    match /tips/{tipId} {
+      // Anyone can submit a tip
+      allow create: if true;
+      allow read, update, delete: if isAdmin();
+    }
+  }
+}
