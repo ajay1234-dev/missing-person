@@ -1,19 +1,41 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { mockCases } from "@/lib/mocks/data";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, MapPin, Calendar } from "lucide-react";
+import { Search, MapPin, Calendar, Loader2 } from "lucide-react";
+import { db } from "@/lib/firebase";
+import { collection, getDocs, orderBy, query } from "firebase/firestore";
 
 export default function CasesDirectory() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("All");
+  const [dbCases, setDbCases] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const filteredCases = mockCases.filter(c => {
+  useEffect(() => {
+    const fetchCases = async () => {
+      try {
+        const q = query(collection(db, "missingPersons"), orderBy("reportedAt", "desc"));
+        const snapshot = await getDocs(q);
+        const liveData = snapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        setDbCases(liveData);
+      } catch (err) {
+        console.error("Error fetching cases:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchCases();
+  }, []);
+
+  const allCases = [...mockCases, ...dbCases];
+
+  const filteredCases = allCases.filter(c => {
     const matchesSearch = c.name.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesStatus = filterStatus === "All" || c.status === filterStatus;
     return matchesSearch && matchesStatus;

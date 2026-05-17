@@ -25,6 +25,8 @@ export const useAppStore = create<AppState>((set, get) => ({
       // Remove the cookie used by middleware
       document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
       set({ user: null });
+      // Force navigation to home page to clear state
+      window.location.href = "/";
     } catch (error) {
       console.error("Logout failed", error);
     }

@@ -35,15 +35,39 @@ function AnimatedCounter({ end }: { end: number }) {
 }
 
 export default function AnalyticsDashboard() {
-  const activeCases = mockCases.filter(c => c.status === "Active").length;
+  const [dbCases, setDbCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchLiveStats = async () => {
+      try {
+        const { collection, getDocs } = await import("firebase/firestore");
+        const { db } = await import("@/lib/firebase");
+        const querySnapshot = await getDocs(collection(db, "missingPersons"));
+        const liveData = querySnapshot.docs.map(doc => ({ ...doc.data(), id: doc.id }));
+        setDbCases(liveData);
+      } catch (err) {
+        console.error("Dashboard fetch error", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchLiveStats();
+  }, []);
+
+  // Merge Mocks + DB
+  const allCasesCombined = [...mockCases, ...dbCases];
+  const activeCasesCount = allCasesCombined.filter(c => c.status === "Active").length;
   const recentAlerts = mockAlerts.slice(0, 5);
 
   const stats = [
-    { label: "Total Cases", value: mockCases.length, icon: Users, color: "text-[var(--info)]", bg: "bg-[var(--info-bg)]", trend: "+12%" },
-    { label: "Active Tracking", value: activeCases, icon: Eye, color: "text-[var(--warning)]", bg: "bg-[var(--warning-bg)]", trend: "+4%" },
+    { label: "Total Cases", value: allCasesCombined.length, icon: Users, color: "text-[var(--info)]", bg: "bg-[var(--info-bg)]", trend: "+12%" },
+    { label: "Active Tracking", value: activeCasesCount, icon: Eye, color: "text-[var(--warning)]", bg: "bg-[var(--warning-bg)]", trend: "+4%" },
     { label: "System Alerts", value: mockAlerts.length, icon: FileWarning, color: "text-[var(--danger)]", bg: "bg-[var(--danger-bg)]", trend: "+24%" },
-    { label: "Recovered", value: mockCases.filter(c => c.status === "Found").length, icon: UserCheck, color: "text-[var(--success)]", bg: "bg-[var(--success-bg)]", trend: "+18%" }
+    { label: "Recovered", value: allCasesCombined.filter(c => c.status === "Found").length, icon: UserCheck, color: "text-[var(--success)]", bg: "bg-[var(--success-bg)]", trend: "+18%" }
   ];
+
+  const recentIntake = allCasesCombined.slice(0, 4);
 
   return (
     <div className="space-y-8 pb-12">
@@ -81,8 +105,8 @@ export default function AnalyticsDashboard() {
                 <CardDescription>Metrics spanning the last 6 months of logging.</CardDescription>
               </CardHeader>
               <CardContent className="pt-8 pl-0 border-b-transparent">
-                <div className="h-[300px] w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[300px] w-full min-h-[300px]">
+                  <ResponsiveContainer width="99%" height={300}>
                     <BarChart data={[
                       { name: 'Jan', cases: 40 }, { name: 'Feb', cases: 30 }, { name: 'Mar', cases: 55 },
                       { name: 'Apr', cases: 45 }, { name: 'May', cases: 60 }, { name: 'Jun', cases: 35 },
@@ -114,15 +138,15 @@ export default function AnalyticsDashboard() {
                </CardHeader>
                <CardContent className="p-0">
                   <div className="divide-y divide-[var(--border)]">
-                     {mockCases.slice(0, 4).map(c => (
-                        <div key={c.id} className="flex items-center gap-4 p-4 hover:bg-[var(--bg-elevated)] transition-colors group cursor-pointer">
-                           <img src={c.photoURL} alt={c.name} className="w-[40px] h-[40px] rounded-full object-cover border border-[var(--bg-subtle)]" />
+                     {recentIntake.map(c => (
+                        <Link href={`/dashboard/cases/${c.id}`} key={c.id} className="flex items-center gap-4 p-4 hover:bg-[var(--bg-elevated)] transition-colors group cursor-pointer">
+                           <img src={c.photoURL} alt={c.name} className="w-[40px] h-[40px] rounded-full object-cover border border-[var(--border)]" />
                            <div className="flex-1 min-w-0">
-                              <p className="text-[14px] font-semibold text-[var(--text-primary)] truncate">{c.name}</p>
+                              <p className="text-[14px] font-semibold text-[var(--text-primary)] truncate group-hover:text-[var(--brand)] transition-colors">{c.name}</p>
                               <p className="text-[12px] text-[var(--text-muted)] truncate">{c.lastSeenLocation}</p>
                            </div>
                            <Badge variant={c.status.toLowerCase() as any}>{c.status}</Badge>
-                        </div>
+                        </Link>
                      ))}
                   </div>
                </CardContent>
