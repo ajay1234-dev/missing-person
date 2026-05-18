@@ -41,6 +41,39 @@ export default function CasesDirectory() {
     return matchesSearch && matchesStatus;
   });
 
+  const exportToCSV = () => {
+    if (filteredCases.length === 0) return;
+    
+    const headers = ["ID", "Name", "Age", "Gender", "Status", "Last Seen Location", "Last Seen Date", "Reported At"];
+    const csvRows = [headers.join(",")];
+    
+    filteredCases.forEach(c => {
+      const row = [
+        c.id,
+        `"${(c.name || "").replace(/"/g, '""')}"`,
+        c.age,
+        c.gender,
+        c.status,
+        `"${(c.lastSeenLocation || "").replace(/"/g, '""')}"`,
+        c.lastSeenDate,
+        c.reportedAt
+      ];
+      csvRows.push(row.join(","));
+    });
+    
+    const csvString = csvRows.join("\n");
+    const blob = new Blob([csvString], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Findra_Cases_Export_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className="space-y-6 pb-12">
        
@@ -49,7 +82,7 @@ export default function CasesDirectory() {
             <h1 className="text-[28px] font-bold tracking-tight text-[var(--text-primary)]">Global Database</h1>
             <p className="text-[14px] text-[var(--text-secondary)]">Directory of active and resolved system entities.</p>
          </div>
-         <Button className="hidden md:flex">Export CSV</Button>
+         <Button className="hidden md:flex" onClick={exportToCSV}>Export CSV</Button>
        </div>
 
        {/* Sticky Filter Bar */}
