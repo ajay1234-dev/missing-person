@@ -47,22 +47,32 @@ export default function CasesDirectory() {
     const headers = ["ID", "Name", "Age", "Gender", "Status", "Last Seen Location", "Last Seen Date", "Reported At"];
     const csvRows = [headers.join(",")];
     
+    const formatCSVField = (val: any) => {
+      if (val === null || val === undefined) return '""';
+      if (typeof val === 'object') {
+        if (typeof val.toDate === 'function') val = val.toDate().toISOString();
+        else if ('seconds' in val) val = new Date(val.seconds * 1000).toISOString();
+        else if (val instanceof Date) val = val.toISOString();
+      }
+      return `"${String(val).replace(/"/g, '""')}"`;
+    };
+
     filteredCases.forEach(c => {
       const row = [
-        c.id,
-        `"${(c.name || "").replace(/"/g, '""')}"`,
-        c.age,
-        c.gender,
-        c.status,
-        `"${(c.lastSeenLocation || "").replace(/"/g, '""')}"`,
-        c.lastSeenDate,
-        c.reportedAt
+        formatCSVField(c.id),
+        formatCSVField(c.name),
+        formatCSVField(c.age),
+        formatCSVField(c.gender),
+        formatCSVField(c.status),
+        formatCSVField(c.lastSeenLocation),
+        formatCSVField(c.lastSeenDate),
+        formatCSVField(c.reportedAt)
       ];
       csvRows.push(row.join(","));
     });
     
     const csvString = csvRows.join("\n");
-    const blob = new Blob([csvString], { type: "text/csv" });
+    const blob = new Blob([csvString], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     
     const a = document.createElement("a");
